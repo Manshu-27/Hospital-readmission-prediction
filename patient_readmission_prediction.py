@@ -1,59 +1,64 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt 
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
 
-data = pd.read_csv("diabetic_data.csv")
-print("Dataset loaded successfully")
+data = pd.read_csv("Hospital_readmission.csv")
 
-data.columns = data.columns.str.strip().str.lower()
-print(data.columns)
+print("First 5 Rows:")
+print(df.head())
 
-data['readmitted_binary'] = data['readmitted'].apply(
-    lambda x: 1 if x == '<30' else 0
-)
+Print("\nDataset Info:")
+print(df.Info())
 
-features = [
-    'age',
-    'gender',
-    'race',
-    'time_in_hospital',
-    'num_lab_procedures',
-    'num_medications',
-    'number_outpatient',
-    'number_emergency',
-    'number_inpatient'
-]
+print("\nMissing Values:")
+print(df.isnull().sum())
 
-X = data[features]
-y = data['readmitted_binary']
+df = df.dropna()
 
-for col in X.columns:
-    if X[col].dtype == 'object':
-        X[col] = X[col].fillna('Unknown')
-    else:
-        X[col] = X[col].fillna(X[col].median())
+label_Encoder = labelEncoder()
 
-from sklearn.preprocessing import LabelEncoder
+For column in df.select_dtypes(include=['object']).columns:
+    df[column] = label_encoder.fit_transform(df[column])
 
-label_encoders = {}
+target_column = "readmitted"
 
-for col in X.columns:
-    if X[col].dtype == 'object':
-        le = LabelEncoder()
-        X[col] = le.fit_transform(X[col])
-        label_encoders[col] = le
+X = df.drop(target_column, axis=1)
+y = df[target_column]
 
-
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(
+X_tarin, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
-)
-from sklearn.linear_model import LogisticRegression
 
-model = LogisticRegression(max_iter=1000)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuarcy = accuracy_score(y_test, y_pred)
+print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+
+print("\nClassification Report:")
+print(calssificaton_report(y_test, y_pred))
+
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure()
+plt.imshow(cm)
+plt.title("confusion Matrix")
+plt.xlabel("predicted")
+plt.ylabel("Actual")
+plt.colorbar()
+plt.show()
+
+print("\nConfusion Matrix:")
+print(cm)
+
+
+
+    
+
+
