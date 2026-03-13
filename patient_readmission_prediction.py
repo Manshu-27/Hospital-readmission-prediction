@@ -1,64 +1,58 @@
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt 
+import pandas as pd 
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
-data = pd.read_csv("Hospital_readmission.csv")
+df = pd.read_csv("readmission_predictions_final.csv")
 
-print("First 5 Rows:")
+print("First 5 rows:")
 print(df.head())
 
-Print("\nDataset Info:")
-print(df.Info())
+print("\nDataset Info:")
+print(df.info())
 
-print("\nMissing Values:")
+print("\nMissing values:")
 print(df.isnull().sum())
 
 df = df.dropna()
 
-label_Encoder = labelEncoder()
+LabelEncoder = LabelEncoder()
 
-For column in df.select_dtypes(include=['object']).columns:
-    df[column] = label_encoder.fit_transform(df[column])
+for column in df.select_dtypes(include=['object']).columns:
+    df[column] = LabelEncoder.fit_transform(df[column])
 
-target_column = "readmitted"
 
-X = df.drop(target_column, axis=1)
-y = df[target_column]
-
-X_tarin, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
-
-accuarcy = accuracy_score(y_test, y_pred)
-print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
-
-print("\nClassification Report:")
-print(calssificaton_report(y_test, y_pred))
-
-cm = confusion_matrix(y_test, y_pred)
-
-plt.figure()
-plt.imshow(cm)
-plt.title("confusion Matrix")
-plt.xlabel("predicted")
-plt.ylabel("Actual")
-plt.colorbar()
+plt.hist(df['age'], bins=20)    
+plt.title("Age distribution of patients")
+plt.xlabel("Age")
+plt.ylabel("Number of patients")
 plt.show()
 
-print("\nConfusion Matrix:")
-print(cm)
+X = df.drop("actual_readmission", axis=1)
+y = df["actual_readmission"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, predictions)
+print("\nModel Accuracy:", accuracy)
+
 
 
 
     
+
 
 
